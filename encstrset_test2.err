@@ -1,0 +1,16 @@
+encstrset_new()
+encstrset_new: set #0 created
+encstrset_insert(0, "testowy", "1538221")
+encstrset_insert: set #0, cypher "45 50 40 4C 5D 45 48" inserted
+encstrset_insert(0, NULL, NULL)
+encstrset_insert: invalid value (NULL)
+encstrset_insert(0, NULL, "ABC")
+encstrset_insert: invalid value (NULL)
+encstrset_test(0, "testowy", "1538221")
+encstrset_test: set #0, cypher "45 50 40 4C 5D 45 48" is present
+encstrset_test(0, "Testowy", "1538221")
+encstrset_test: set #0, cypher "65 50 40 4C 5D 45 48" is not present
+encstrset_test(0, "testowy", "")
+encstrset_test: set #0, cypher "74 65 73 74 6F 77 79" is not present
+encstrset_delete(0)
+encstrset_delete: set #0 deleted

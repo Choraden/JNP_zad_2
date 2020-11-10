@@ -1,0 +1,61 @@
+encstrset_new()
+encstrset_new: set #0 created
+encstrset_insert(0, "foo", "123")
+encstrset_insert: set #0, cypher "57 5D 5C" inserted
+encstrset_test(0, "foo", "123")
+encstrset_test: set #0, cypher "57 5D 5C" is present
+encstrset_test(0, "bar", "5X")
+encstrset_test: set #0, cypher "57 39 47" is not present
+encstrset_insert(0, "bar", "3x")
+encstrset_insert: set #0, cypher "51 19 41" inserted
+encstrset_test(0, "bar", "3x")
+encstrset_test: set #0, cypher "51 19 41" is present
+encstrset_size(0)
+encstrset_size: set #0 contains 2 element(s)
+encstrset_insert(0, "bar", "3x3")
+encstrset_insert: set #0, cypher "51 19 41" was already present
+encstrset_size(0)
+encstrset_size: set #0 contains 2 element(s)
+encstrset_new()
+encstrset_new: set #1 created
+encstrset_insert(1, "foo", "123zl")
+encstrset_insert: set #1, cypher "57 5D 5C" inserted
+encstrset_test(1, "foo", "123")
+encstrset_test: set #1, cypher "57 5D 5C" is present
+encstrset_copy(0, 1)
+encstrset_copy: cypher "51 19 41" copied from set #0 to set #1
+encstrset_copy: copied cypher "57 5D 5C" was already present in set #1
+encstrset_test(1, "bar", "3x")
+encstrset_test: set #1, cypher "51 19 41" is present
+encstrset_size(1)
+encstrset_size: set #1 contains 2 element(s)
+encstrset_remove(0, "foo", "123;")
+encstrset_remove: set #0, cypher "57 5D 5C" removed
+encstrset_remove(0, "foo", "123;")
+encstrset_remove: set #0, cypher "57 5D 5C" was not present
+encstrset_test(0, "bar", "3x3")
+encstrset_test: set #0, cypher "51 19 41" is present
+encstrset_size(0)
+encstrset_size: set #0 contains 1 element(s)
+encstrset_clear(1)
+encstrset_clear: set #1 cleared
+encstrset_size(1)
+encstrset_size: set #1 contains 0 element(s)
+encstrset_copy(0, 1)
+encstrset_copy: cypher "51 19 41" copied from set #0 to set #1
+encstrset_delete(0)
+encstrset_delete: set #0 deleted
+encstrset_copy(1, 0)
+encstrset_copy: set #0 does not exist
+encstrset_copy(0, 1)
+encstrset_copy: set #0 does not exist
+encstrset_insert(0, "foo", NULL)
+encstrset_insert: set #0 does not exist
+encstrset_size(0)
+encstrset_size: set #0 does not exist
+encstrset_test(0, "foo", NULL)
+encstrset_test: set #0 does not exist
+encstrset_remove(0, "foo", NULL)
+encstrset_remove: set #0 does not exist
+encstrset_clear(0)
+encstrset_clear: set #0 does not exist
