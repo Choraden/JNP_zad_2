@@ -85,7 +85,8 @@ namespace {
             accessory::get_stream() << "\"" << std::hex << std::uppercase;
             for (auto it = cypher.begin(); it != cypher.end(); it++) {
                 accessory::get_stream() << std::setfill('0')
-                                        << std::setw(2) << (int) *it;
+                                        << std::setw(2)
+                                        << (0xff & ((unsigned int) *it));
                 if (std::next(it) != cypher.end())
                     accessory::get_stream() << " ";
             }
