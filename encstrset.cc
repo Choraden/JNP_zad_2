@@ -7,6 +7,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 // Rzeczy ukrywane przed światem zewnętrznym
 namespace {
@@ -83,10 +84,12 @@ namespace {
         void print_cypher(const cypher_t &cypher) {
             accessory::get_stream() << "\"" << std::hex << std::uppercase;
             for (auto it = cypher.begin(); it != cypher.end(); it++) {
-                accessory::get_stream() << (int) *it
-                    << (std::next(it) == cypher.end() ? "\"" : " ");
+                accessory::get_stream() << std::setfill('0')
+                                        << std::setw(2) << (int) *it;
+                if (std::next(it) != cypher.end())
+                    accessory::get_stream() << " ";
             }
-            accessory::get_stream() << std::dec << std::nouppercase;
+            accessory::get_stream() << "\"" << std::dec << std::nouppercase;
         }
 
         // Wypisuje linię postaci
