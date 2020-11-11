@@ -1,5 +1,6 @@
 #include "encstrset.h"
 #include <cstddef>
+#include <sstream>
 #include <unordered_map>
 #include <unordered_set>
 #include <iostream>
@@ -50,13 +51,16 @@ namespace {
             return res;
         }
 
-        // Otacza tekst cudzysłowami lub wypisuje "NULL", jeżeli str == nullptr
+        // Otacza tekst cudzysłowami
+        // lub wypisuje "NULL", jeżeli str == nullptr
         std::string wrap_text(const char *str) {
             if (str == nullptr) {
                 return "NULL";
             }
 
-            return "\"" + std::string(str) + "\"";
+            std::ostringstream oss;
+            oss << "\"" << str << "\"";
+            return oss.str();
         }
     }
 
@@ -85,19 +89,40 @@ namespace {
             accessory::get_stream() << std::dec << std::nouppercase;
         }
 
-        void new_set(set_id_t id) {
-            accessory::get_stream() << "encstrset_new: set #" << id
-                                    << " created" << std::endl;
+        // Wypisuje linię postaci
+        // 'fun_name: set #id, cypher "..." (additional_text)'
+        void desc_fun_res(const std::string &fun_name,
+                          const set_id_t id,
+                          const cypher_t &cypher,
+                          const std::string &additional_text) {
+            accessory::get_stream() << fun_name << ": set #"
+                                    << id << ", cypher ";
+            print_f::print_cypher(cypher);
+            accessory::get_stream() << additional_text << std::endl;
+        }
+
+        // Wypisuje linię postaci 'fun_name: set #id (action)'
+        void set_action(const std::string &fun_name,
+                         const set_id_t id, const std::string &action) {
+            accessory::get_stream() << fun_name << ": set #" << id << " "
+                                    << action << std::endl;
         }
         
         void set_doesnt_exist(const std::string &fun_name, const set_id_t id) {
-            accessory::get_stream() << fun_name << ": set #" << id
-                                    << " does not exist" << std::endl;
+            print_f::set_action(fun_name, id, "does not exist");
         }
 
         void invalid_value(const std::string &fun_name) {
             accessory::get_stream() << fun_name << ": invalid value (NULL)"
                                     << std::endl;
+        }
+
+        void new_desc(const set_id_t id) {
+            print_f::set_action("encstrset_new", id, "created");
+        }
+
+        void delete_desc(const set_id_t id) {
+            print_f::set_action("encstrset_delete", id, "deleted");
         }
 
         void size_desc(const set_id_t id, const size_t size) {
@@ -106,34 +131,32 @@ namespace {
                                     << " element(s)" << std::endl;
         }
 
-        // Wypisuje nazwę funkcji, id zbioru i szyfr
-        void desc_fun_res(const std::string &fun_name,
-                          const set_id_t id, const cypher_t &cypher) {
-            accessory::get_stream() << fun_name << ": set #"
-                                    << id << ", cypher ";
-            print_f::print_cypher(cypher);
-        }
-
         void insertion_desc(const set_id_t id,
                             const cypher_t &cypher, const bool inserted) {
-            print_f::desc_fun_res("encstrset_insert", id, cypher);
-            accessory::get_stream()
-                << (inserted ? " inserted" : " was already present")
-                << std::endl;
+            print_f::desc_fun_res("encstrset_insert", id, cypher,
+                                  inserted ?
+                                  " inserted" :
+                                  " was already present");
         }
 
         void removing_desc(const set_id_t id,
                            const cypher_t &cypher, const bool removed) {
-            print_f::desc_fun_res("encstrset_remove", id, cypher);
-            accessory::get_stream()
-                << (removed ? " removed" : " was not present") << std::endl;
+            print_f::desc_fun_res("encstrset_remove", id, cypher,
+                                  removed ?
+                                  " removed" :
+                                  " was not present");
         }
 
         void testing_desc(const set_id_t id,
                           const cypher_t &cypher, const bool present) {
-            print_f::desc_fun_res("encstrset_test", id, cypher);
-            accessory::get_stream()
-                << (present ? " is present" : " is not present") << std::endl;
+            print_f::desc_fun_res("encstrset_test", id, cypher,
+                                  present ?
+                                  " is present" :
+                                  " is not present");
+        }
+
+        void clear_desc(const set_id_t id) {
+            print_f::set_action("encstrset_clear", id, "cleared");
         }
 
         void copying_desc(const set_id_t src_id, const set_id_t dst_id,
@@ -159,24 +182,23 @@ namespace {
 
 unsigned long jnp1::encstrset_new() {
     print_f::desc_fun("encstrset_new", fun_args_t {});
-    static set_id_t next_id = 0;
+    static set_id_t id = 0;
     map_t &global_map = accessory::get_global_map();
-    global_map.insert(std::make_pair(next_id, set_t()));
-    print_f::new_set(next_id);
-    return next_id++;
+    global_map.insert(std::make_pair(id, set_t()));
+    print_f::new_desc(id);
+    return id++;
 }
 
-void jnp1::encstrset_delete(set_id_t id) {
+void jnp1::encstrset_delete(unsigned long id) {
     print_f::desc_fun("encstrset_delete", fun_args_t {std::to_string(id)});
     map_t &global_map = accessory::get_global_map();
     auto set_it = global_map.find(id);
     if (set_it == global_map.end()) {
         print_f::set_doesnt_exist("encstrset_delete", id);
+        return;
     }
     global_map.erase(set_it);
-    accessory::get_stream() << "encstrset_delete: set #" << id
-                            << " deleted" << std::endl;
-
+    print_f::delete_desc(id);
 }
 
 size_t jnp1::encstrset_size(unsigned long id) {
@@ -282,8 +304,7 @@ void jnp1::encstrset_clear(unsigned long id) {
     }
 
     set_it->second.clear();
-    accessory::get_stream() << "encstrset_clear: set #" << id
-                            << " cleared" << std::endl;
+    print_f::clear_desc(id);
 }
 
 void jnp1::encstrset_copy(unsigned long src_id, unsigned long dst_id) {
