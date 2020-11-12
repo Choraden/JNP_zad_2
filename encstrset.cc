@@ -1,5 +1,4 @@
 #include "encstrset.h"
-#include <cstddef>
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
@@ -32,7 +31,7 @@ namespace {
         std::ostream& get_stream() {
             static std::ios_base::Init init;
             static std::ostream *global_stream = debug ?
-                    &std::cerr : new std::ostream (nullptr);
+                                                 &std::cerr : new std::ostream (nullptr);
             return *global_stream;
         }
 
@@ -88,7 +87,7 @@ namespace {
             char prev_fill = accessory::get_stream().fill('0');
             for (auto it = cypher.begin(); it != cypher.end(); it++) {
                 accessory::get_stream() << std::setw(NO_OF_DIGITS)
-                    << (FILTER & static_cast<unsigned>(*it));
+                                        << (FILTER & static_cast<unsigned>(*it));
                 if (std::next(it) != cypher.end()) {
                     accessory::get_stream() << " ";
                 }
