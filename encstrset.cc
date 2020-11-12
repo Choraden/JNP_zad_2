@@ -42,7 +42,7 @@ namespace {
                 std::string key_s(key);
                 size_t key_len = key_s.length();
                 if (key_len > 0) {
-                    unsigned int it = 0;
+                    unsigned it = 0;
                     for (auto &i : res) {
                         i ^= key_s[it];
                         (++it) %= key_len;
@@ -82,15 +82,19 @@ namespace {
         // Wypisuje szyfr w postaci szesnastkowej oddzielonej spacjami
         // i otoczonej cudzysłowami
         void print_cypher(const cypher_t &cypher) {
+            static constexpr unsigned FILTER = 0xffu;
+            static constexpr int NO_OF_DIGITS = 2;
             accessory::get_stream() << "\"" << std::hex << std::uppercase;
+            char prev_fill = accessory::get_stream().fill('0');
             for (auto it = cypher.begin(); it != cypher.end(); it++) {
-                accessory::get_stream() << std::setfill('0')
-                                        << std::setw(2)
-                                        << (0xff & ((unsigned int) *it));
-                if (std::next(it) != cypher.end())
+                accessory::get_stream() << std::setw(NO_OF_DIGITS)
+                    << (FILTER & static_cast<unsigned>(*it));
+                if (std::next(it) != cypher.end()) {
                     accessory::get_stream() << " ";
+                }
             }
             accessory::get_stream() << "\"" << std::dec << std::nouppercase;
+            accessory::get_stream().fill(prev_fill);
         }
 
         // Wypisuje linię postaci
@@ -107,11 +111,11 @@ namespace {
 
         // Wypisuje linię postaci 'fun_name: set #id (action)'
         void set_action(const std::string &fun_name,
-                         const set_id_t id, const std::string &action) {
+                        const set_id_t id, const std::string &action) {
             accessory::get_stream() << fun_name << ": set #" << id << " "
                                     << action << std::endl;
         }
-        
+
         void set_doesnt_exist(const std::string &fun_name, const set_id_t id) {
             print_f::set_action(fun_name, id, "does not exist");
         }
