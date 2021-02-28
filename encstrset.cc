@@ -23,15 +23,15 @@ namespace {
     using fun_args_t = std::vector<std::string>;
 
     namespace accessory {
-        map_t& get_global_map() {
+        map_t &get_global_map() {
             static auto *global_map = new map_t();
             return *global_map;
         }
 
-        std::ostream& get_stream() {
+        std::ostream &get_stream() {
             static std::ios_base::Init init;
             static std::ostream *global_stream = debug ?
-                                                 &std::cerr : new std::ostream (nullptr);
+                                                 &std::cerr : new std::ostream(nullptr);
             return *global_stream;
         }
 
@@ -177,8 +177,7 @@ namespace {
             if (copied) {
                 accessory::get_stream() << " copied from set #" << src_id
                                         << " to set #" << dst_id << std::endl;
-            }
-            else {
+            } else {
                 accessory::get_stream() << " was already present in set #"
                                         << dst_id << std::endl;
             }
@@ -188,7 +187,7 @@ namespace {
 }
 
 unsigned long jnp1::encstrset_new() {
-    print_f::desc_fun("encstrset_new", fun_args_t {});
+    print_f::desc_fun("encstrset_new", fun_args_t{});
     static set_id_t id = 0;
     map_t &global_map = accessory::get_global_map();
     global_map.insert(std::make_pair(id, set_t()));
@@ -197,7 +196,7 @@ unsigned long jnp1::encstrset_new() {
 }
 
 void jnp1::encstrset_delete(unsigned long id) {
-    print_f::desc_fun("encstrset_delete", fun_args_t {std::to_string(id)});
+    print_f::desc_fun("encstrset_delete", fun_args_t{std::to_string(id)});
     map_t &global_map = accessory::get_global_map();
     auto set_it = global_map.find(id);
     if (set_it == global_map.end()) {
@@ -209,7 +208,7 @@ void jnp1::encstrset_delete(unsigned long id) {
 }
 
 size_t jnp1::encstrset_size(unsigned long id) {
-    print_f::desc_fun("encstrset_size", fun_args_t {std::to_string(id)});
+    print_f::desc_fun("encstrset_size", fun_args_t{std::to_string(id)});
     map_t &global_map = accessory::get_global_map();
     auto set_it = global_map.find(id);
     if (set_it == global_map.end()) {
@@ -224,9 +223,9 @@ size_t jnp1::encstrset_size(unsigned long id) {
 bool jnp1::encstrset_insert(unsigned long id,
                             const char *value, const char *key) {
     print_f::desc_fun("encstrset_insert",
-                      fun_args_t {std::to_string(id),
-                                  accessory::wrap_text(value),
-                                  accessory::wrap_text(key)});
+                      fun_args_t{std::to_string(id),
+                                 accessory::wrap_text(value),
+                                 accessory::wrap_text(key)});
     if (value == nullptr) {
         print_f::invalid_value("encstrset_insert");
         return false;
@@ -250,9 +249,9 @@ bool jnp1::encstrset_insert(unsigned long id,
 bool jnp1::encstrset_remove(unsigned long id,
                             const char *value, const char *key) {
     print_f::desc_fun("encstrset_remove",
-                      fun_args_t {std::to_string(id),
-                                  accessory::wrap_text(value),
-                                  accessory::wrap_text(key)});
+                      fun_args_t{std::to_string(id),
+                                 accessory::wrap_text(value),
+                                 accessory::wrap_text(key)});
     if (value == nullptr) {
         print_f::invalid_value("encstrset_remove");
         return false;
@@ -276,9 +275,9 @@ bool jnp1::encstrset_remove(unsigned long id,
 bool jnp1::encstrset_test(unsigned long id,
                           const char *value, const char *key) {
     print_f::desc_fun("encstrset_test",
-                      fun_args_t {std::to_string(id),
-                                  accessory::wrap_text(value),
-                                  accessory::wrap_text(key)});
+                      fun_args_t{std::to_string(id),
+                                 accessory::wrap_text(value),
+                                 accessory::wrap_text(key)});
     if (value == nullptr) {
         print_f::invalid_value("encstrset_test");
         return false;
@@ -300,7 +299,7 @@ bool jnp1::encstrset_test(unsigned long id,
 }
 
 void jnp1::encstrset_clear(unsigned long id) {
-    print_f::desc_fun("encstrset_clear", fun_args_t {std::to_string(id)});
+    print_f::desc_fun("encstrset_clear", fun_args_t{std::to_string(id)});
 
     // Wydobycie z mapy odpowiedniego zbioru
     map_t &global_map = accessory::get_global_map();
@@ -316,8 +315,8 @@ void jnp1::encstrset_clear(unsigned long id) {
 
 void jnp1::encstrset_copy(unsigned long src_id, unsigned long dst_id) {
     print_f::desc_fun("encstrset_copy",
-                      fun_args_t {std::to_string(src_id),
-                                  std::to_string(dst_id)});
+                      fun_args_t{std::to_string(src_id),
+                                 std::to_string(dst_id)});
 
     // Wydobycie z mapy dwóch zbiorów
     map_t &global_map = accessory::get_global_map();
